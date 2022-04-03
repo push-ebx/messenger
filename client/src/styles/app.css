@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', serif;
+  font-style: normal;
+  font-weight: 200;
+  font-size: 17px;
+  line-height: 17px;
+  color: #FFFFFF;
+}
+
+body {
+  overflow: hidden;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background: url("../assets/background-app.png") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* ------------------------ */
+
+.main {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
+.left{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin-right: 13px;
+}
+
+.right{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages{
+  position: absolute;
+  bottom: 80px;
+  display: inline-flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+.chat{
+  height: 100%;
+  width: 100%;
+}
