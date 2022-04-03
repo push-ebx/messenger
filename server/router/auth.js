@@ -2,13 +2,13 @@ const {validationResult} = require("express-validator");
 const UserSchema = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
-const {secret} = require('../config')
+require('dotenv').config({path: "../.env"});
 
 const generateAccessToken = (id) => {
   const payload = {
     id
   }
-  return jwt.sign(payload, secret, {expiresIn: "24h"})
+  return jwt.sign(payload, process.env.SECRET, {expiresIn: "24h"})
 }
 
 class Auth {
