@@ -10,7 +10,7 @@ const router = require('./router/router');
 
 const DB_URL = process.env.DB_URL;
 const PORT = process.env.PORT;
-
+//check
 app
     .use(cors())
     .use(express.json())
