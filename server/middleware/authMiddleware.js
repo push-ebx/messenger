@@ -11,7 +11,7 @@ module.exports = function (req, res, next){
     if(!token){
       return res.status(483).json({message: "User has been not authorized"})
     }
-    req.user_id = jwt.verify(token, process.env.SECRET)
+    req.user_id = jwt.verify(token, process.env.SECRET).id
     next()
   } catch (e) {
     console.log(e)

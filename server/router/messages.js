@@ -1,29 +1,88 @@
 const MessageSchema = require('../models/Message')
+const ConversationSchema = require('../models/Conversation')
 
 class Messages {
-  async test(req, res) {
-    const mes = new MessageSchema({
-      id: 1,
-      conversationId: 1,
-      from: 1,
-      to: 2,
-      text: "test"
-    });
-    mes.save().then(() => console.log('mes created'));
-    res.status(200).json({message: 'mes was create'});
-  }
-
+  // POST body:{"receiver_id": id compamion},
   async send(req, res) {
-
+    try {
+      const sender_id = req.user_id
+      const {receiver_id, text} = req.body
+      const conversation = await getConversation(sender_id, receiver_id) ?? await saveConversation(receiver_id, sender_id);
+      const count = await MessageSchema.countDocuments({conversationId: conversation.id})
+      const new_message = new MessageSchema({
+        id: count + 1,
+        conversationId: conversation.id,
+        sender_id,
+        receiver_id,
+        text
+      })
+      new_message.save().then(() => console.log("Message sent successfully"))
+      return res.status(200).json({mes: "Message sent successfully"})
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({message: 'Error. The message was not sent'})
+    }
   }
 
+  // POST body:{"second_id": id compamion},
+  async createConversation(req, res) { // валидация, проверить существует ли id_companion
+    try {
+      const {second_id} = req.body
+      const first_id = req.user_id
+      const conversation = await getConversation(first_id, second_id);
+      if (conversation) {
+        return res.status(400).json({message: 'The conversation has already been created '})
+      }
+      saveConversation(first_id, second_id)
+      res.status(200).json({message: `Conversation successfully registered`})
+      return
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({message: 'Create conversation error'})
+    }
+  }
+
+  // GET query: user_id (of token); return: conversations
   async getConversations(req, res) {
-
+    try {
+      const user_id = req.user_id
+      const conversations = await ConversationSchema.find({$or: [{first_id: user_id}, {second_id: user_id}]})
+      console.log(conversations)
+      return res.status(200).json(conversations)
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({message: 'Error. The message was not sent'}) //////
+    }
   }
 
+  // GET query: companion_id; return: conversation
   async getConversationById(req, res) {
-
+    try {
+      const user_id = req.user_id
+      const {companion_id} = req.query
+      const conversation = await getConversation(user_id, companion_id)
+      const messages = await MessageSchema.find({conversationId: conversation.id})
+      return res.status(200).json(messages)
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({message: 'Error. The message was not sent'})
+    }
   }
+}
+
+const saveConversation = async (first_id, second_id) => {
+  const count = await ConversationSchema.countDocuments();
+  const new_conversation = new ConversationSchema({
+    id: count + 1, first_id, second_id
+  });
+  new_conversation.save().then(() => console.log(`Conversation successfully registered with id: ${count + 1}`));
+  return new_conversation
+}
+
+const getConversation = async (first_id, second_id) => {
+  return await ConversationSchema.findOne({first_id, second_id}) ?? await ConversationSchema.findOne({
+    first_id: second_id, second_id: first_id
+  })
 }
 
 module.exports = new Messages();

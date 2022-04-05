@@ -22,6 +22,7 @@ router.post('/auth/registration', [
 router.post('/auth/login', auth.login)
 
 router.post('/messages/send', authMiddleware, messages.send)
+router.post('/messages/createConversation', authMiddleware, messages.createConversation)
 router.get('/messages/getConversations', authMiddleware, messages.getConversations)
 router.get('/messages/getConversationById', authMiddleware, messages.getConversationById)
 module.exports = router;
