@@ -68,7 +68,7 @@ class Auth {
       if (!validPassword) {
         return res.status(200).json({
           error: {
-            code: 400,
+            code: 422,
             error_message: "Entered invalid password"
           }
         })

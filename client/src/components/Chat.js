@@ -4,7 +4,8 @@ import GlassInput from "./UI/glassInput/GlassInput";
 import axios from "axios";
 import Message from "./Message/Message";
 import io from 'socket.io-client';
-import {login} from '../API/api'
+import {axios_proxy, login} from '../API/api'
+import cookie from 'cookie'
 
 // const socket = io('/')
 
@@ -28,10 +29,17 @@ const Chat = (props) => {
             const error_code = res.data.error?.code;
             if (error_code) {
               error_code === 404 && console.log("User not found");
-              error_code === 400 && console.log("Entered invalid password")
-            } else console.log(res.data)
+              error_code === 422 && console.log("Entered invalid password");
+            } else {
+              document.cookie = `access_token=${res.data.token}; `;
+              console.log(res.data);
+            }
           })
-          .catch(err => err.response.status === 400 && console.log("Login error"))
+          .catch(err => err.response.status === 400 && console.log("Login error"));
+
+      await axios_proxy.get('/users/getById?id=12',
+          {headers: {Authorization: `Bearer ${cookie.parse(document.cookie).access_token}`}})
+          .then(res => console.log(res));
     }
   }
 
