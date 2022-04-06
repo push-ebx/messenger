@@ -31,11 +31,15 @@ class Messages {
       const first_id = req.user_id
       const conversation = await getConversation(first_id, second_id);
       if (conversation) {
-        return res.status(400).json({message: 'The conversation has already been created '})
+        return res.status(400).json({
+          error: {
+            code: 422,
+            error_message: "The conversation has already been created"
+          }
+        })
       }
       saveConversation(first_id, second_id)
-      res.status(200).json({message: `Conversation successfully registered`})
-      return
+      return res.status(200).json({message: `Conversation successfully registered`})
     } catch (e) {
       console.log(e)
       res.status(400).json({message: 'Create conversation error'})
@@ -47,7 +51,6 @@ class Messages {
     try {
       const user_id = req.user_id
       const conversations = await ConversationSchema.find({$or: [{first_id: user_id}, {second_id: user_id}]})
-      console.log(conversations)
       return res.status(200).json(conversations)
     } catch (e) {
       console.log(e)
@@ -60,7 +63,7 @@ class Messages {
     try {
       const user_id = req.user_id
       const {companion_id} = req.query
-      const conversation = await getConversation(user_id, companion_id)
+      const conversation = await getConversation(user_id, companion_id)////беседы может не быть
       const messages = await MessageSchema.find({conversationId: conversation.id})
       return res.status(200).json(messages)
     } catch (e) {

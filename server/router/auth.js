@@ -16,12 +16,22 @@ class Auth {
     try {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        return res.status(400).json({message: "Registration error", errors})
+        return res.status(422).json({
+          error: {
+            code: 422,
+            error_message: "The user has already been created"
+          }
+        })
       }
       const {username, password, first_name, last_name, sex} = req.body
       const candidate = await UserSchema.findOne({username})
       if (candidate) {
-        return res.status(400).json({message: 'The user has already been created '})
+        return res.status(200).json({
+          error: {
+            code: 422,
+            error_message: "The user has already been created"
+          }
+        })
       }
 
       const count = await UserSchema.countDocuments();
@@ -47,11 +57,21 @@ class Auth {
       const {username, password} = req.body
       const user = await UserSchema.findOne({username})
       if (!user) {
-        return res.status(400).json({message: 'User not found'})
+        return res.status(200).json({
+          error: {
+            code: 404,
+            error_message: "User not found"
+          }
+        })
       }
       const validPassword = bcrypt.compareSync(password, user.password)
       if (!validPassword) {
-        return res.status(400).json({message: 'Entered invalid password'})
+        return res.status(200).json({
+          error: {
+            code: 400,
+            error_message: "Entered invalid password"
+          }
+        })
       }
       const token = generateAccessToken(user.id)
       return res.json({

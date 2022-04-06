@@ -4,8 +4,9 @@ import GlassInput from "./UI/glassInput/GlassInput";
 import axios from "axios";
 import Message from "./Message/Message";
 import io from 'socket.io-client';
+import {login} from '../API/api'
 
-const socket = io('/')
+// const socket = io('/')
 
 const Chat = (props) => {
   const [messages, setMessages] = useState([{message: "Mes1", id: 1}, {message: "Messsss2", id: 2}]);
@@ -21,10 +22,16 @@ const Chat = (props) => {
 
   const check = async (e) => {
     if (e.keyCode === 13) {
-      inputRef.current.value = ''
-      await axios.post('/post', {e: "eeee", ee: "12321321"}).then(data => {
-        console.log(data.data.e)
-      })
+      inputRef.current.value = '';
+      await login("USER", "PASS")
+          .then(res => {
+            const error_code = res.data.error?.code;
+            if (error_code) {
+              error_code === 404 && console.log("User not found");
+              error_code === 400 && console.log("Entered invalid password")
+            } else console.log(res.data)
+          })
+          .catch(err => err.response.status === 400 && console.log("Login error"))
     }
   }
 
