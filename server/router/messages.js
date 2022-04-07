@@ -2,7 +2,7 @@ const MessageSchema = require('../models/Message')
 const ConversationSchema = require('../models/Conversation')
 
 class Messages {
-  // POST body:{"receiver_id": id compamion},
+  // POST body:{receiver_id, text},
   async send(req, res) {
     try {
       const sender_id = req.user_id
@@ -24,14 +24,15 @@ class Messages {
     }
   }
 
-  // POST body:{"second_id": id compamion},
+  // POST body:{second_id},
   async createConversation(req, res) { // валидация, проверить существует ли id_companion
     try {
       const {second_id} = req.body
       const first_id = req.user_id
+      console.log(first_id, second_id)
       const conversation = await getConversation(first_id, second_id);
       if (conversation) {
-        return res.status(400).json({
+        return res.status(200).json({
           error: {
             code: 422,
             error_message: "The conversation has already been created"
@@ -42,11 +43,11 @@ class Messages {
       return res.status(200).json({message: `Conversation successfully registered`})
     } catch (e) {
       console.log(e)
-      res.status(400).json({message: 'Create conversation error'})
+      res.status(400).json({message: 'Error create conversation'})
     }
   }
 
-  // GET query: user_id (of token); return: conversations
+  // GET query: req.user_id of token; return: list of conversations
   async getConversations(req, res) {
     try {
       const user_id = req.user_id
@@ -54,7 +55,7 @@ class Messages {
       return res.status(200).json(conversations)
     } catch (e) {
       console.log(e)
-      res.status(400).json({message: 'Error. The message was not sent'}) //////
+      res.status(400).json({message: 'Error get conversations'})
     }
   }
 

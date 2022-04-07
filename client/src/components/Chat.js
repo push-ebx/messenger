@@ -4,7 +4,9 @@ import GlassInput from "./UI/glassInput/GlassInput";
 import axios from "axios";
 import Message from "./Message/Message";
 import io from 'socket.io-client';
-import {axios_proxy, login} from '../API/api'
+import {registration, login} from '../API/auth'
+import {getById, getByUsername} from "../API/users";
+import {createConversation, getConversationById, getConversations, send} from "../API/messages";
 import cookie from 'cookie'
 
 // const socket = io('/')
@@ -18,28 +20,34 @@ const Chat = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(messages)
+    // console.log(messages)
   }, [messages]);
 
   const check = async (e) => {
     if (e.keyCode === 13) {
       inputRef.current.value = '';
-      await login("USER", "PASS")
-          .then(res => {
-            const error_code = res.data.error?.code;
-            if (error_code) {
-              error_code === 404 && console.log("User not found");
-              error_code === 422 && console.log("Entered invalid password");
-            } else {
-              document.cookie = `access_token=${res.data.token}; `;
-              console.log(res.data);
-            }
-          })
-          .catch(err => err.response.status === 400 && console.log("Login error"));
+      // await login("@@@@", "@@@@")
+      //     .then(res => {
+      //       const error_code = res.data.error?.code;
+      //       if (error_code) {
+      //         error_code === 404 && console.log("User not found");
+      //         error_code === 422 && console.log("Entered invalid password");
+      //       } else {
+      //         document.cookie = `access_token=${res.data.token}; `;
+      //         console.log(res.data);
+      //       }
+      //     })
+      //     .catch(err => err.response.status === 400 && console.log("Login error"))
 
-      await axios_proxy.get('/users/getById?id=12',
-          {headers: {Authorization: `Bearer ${cookie.parse(document.cookie).access_token}`}})
-          .then(res => console.log(res));
+      // await axios_proxy.get('/users/getById?id=12',
+      //     {headers: {Authorization: `Bearer ${cookie.parse(document.cookie).access_token}`}})
+      //     .then(res => console.log(res))
+
+      // await getByUsername("admin").then(u=>console.log((u)))
+      await send({receiver_id: "11", text: "test2"}).then(e => console.log(e))
+      // await createConversation({second_id: 11}).then(c => console.log(c))
+      // await getConversations().then(lc=>console.log(lc))
+      await getConversationById(11).then(lc=>console.log(lc))
     }
   }
 

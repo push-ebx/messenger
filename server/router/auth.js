@@ -16,10 +16,10 @@ class Auth {
     try {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        return res.status(422).json({
+        return res.status(200).json({
           error: {
             code: 422,
-            error_message: "The user has already been created"
+            error_message: {errors}
           }
         })
       }
