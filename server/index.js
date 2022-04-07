@@ -1,12 +1,11 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const http = require('http');
-const cors = require('cors');
-require('dotenv').config();
 const app = express();
+const http = require('http');
 const server = http.createServer(app);
-
+const cors = require('cors');
 const router = require('./router/router');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 const DB_URL = process.env.DB_URL;
 const PORT = process.env.PORT;
@@ -21,10 +20,8 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-});
+const socketManage = require('./socket/socketManage')(io);
+io.on('connection', socketManage);
 
 (async () => {
   try {
@@ -33,6 +30,6 @@ io.on('connection', (socket) => {
       console.log(`Server started on ${PORT}`);
     });
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 })();

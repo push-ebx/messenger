@@ -1,15 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import GlassPanel from "./UI/glassPanel/GlassPanel";
 import GlassInput from "./UI/glassInput/GlassInput";
-import axios from "axios";
 import Message from "./Message/Message";
-import io from 'socket.io-client';
-import {registration, login} from '../API/auth'
-import {getById, getByUsername} from "../API/users";
-import {createConversation, getConversationById, getConversations, send} from "../API/messages";
+import {registration, login} from '../API/methods/auth'
+import {getById, getByUsername} from "../API/methods/users";
+import {createConversation, getConversationById, getConversations, send} from "../API/methods/messages";
 import cookie from 'cookie'
-
-// const socket = io('/')
+import socket from "../API/socket";
+import events from "../events"
 
 const Chat = (props) => {
   const [messages, setMessages] = useState([{message: "Mes1", id: 1}, {message: "Messsss2", id: 2}]);
@@ -20,34 +18,21 @@ const Chat = (props) => {
   }, []);
 
   useEffect(() => {
-    // console.log(messages)
+    // socket.emit(events.IS_ONLINE, {token:cookie.parse(document.cookie).access_token});
+    // socket.on(events.IS_ONLINE, e => console.log(e));
+    socket.on(events.MESSAGE_GET, e => console.log(e.message?.text))
+    window.socket = socket
   }, [messages]);
 
   const check = async (e) => {
     if (e.keyCode === 13) {
+      const mes = {
+        receiver_id: 12,
+        text: inputRef.current.value
+      };
+      socket.emit(events.MESSAGE_SEND, mes);
+      send(mes);
       inputRef.current.value = '';
-      // await login("@@@@", "@@@@")
-      //     .then(res => {
-      //       const error_code = res.data.error?.code;
-      //       if (error_code) {
-      //         error_code === 404 && console.log("User not found");
-      //         error_code === 422 && console.log("Entered invalid password");
-      //       } else {
-      //         document.cookie = `access_token=${res.data.token}; `;
-      //         console.log(res.data);
-      //       }
-      //     })
-      //     .catch(err => err.response.status === 400 && console.log("Login error"))
-
-      // await axios_proxy.get('/users/getById?id=12',
-      //     {headers: {Authorization: `Bearer ${cookie.parse(document.cookie).access_token}`}})
-      //     .then(res => console.log(res))
-
-      // await getByUsername("admin").then(u=>console.log((u)))
-      await send({receiver_id: "11", text: "test2"}).then(e => console.log(e))
-      // await createConversation({second_id: 11}).then(c => console.log(c))
-      // await getConversations().then(lc=>console.log(lc))
-      await getConversationById(11).then(lc=>console.log(lc))
     }
   }
 
