@@ -1,21 +1,31 @@
 .message{
   border-radius: 15px;
-  margin: 5px;
-
+  margin: 0 5px;
+  max-width: 300px;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  display: inline-flex;
-  flex-basis: content;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.right_mes{
+  margin-left: auto;
+}
+
+.left_mes{
+  margin-right: auto;
 }
 
 .time{
   font-size: 10px;
   opacity: 0.7;
-  margin: 15px 7px 5px 10px;
+  margin: 15px 10px 5px 10px;
 }
 
 .message_text{
   margin: 10px 15px;
+  font-size: 15px;
+  line-height: 105%;
 }
