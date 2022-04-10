@@ -9,7 +9,8 @@ const axios_proxy = axios.create({
 
 export const getById = async (id) => {
   try {
-    return await axios_proxy.get(`/getById?id=${id}`)
+    if (id) return await axios_proxy.get(`/getById?id=${id}`)
+    else return await axios_proxy.get(`/getById`)
   } catch (e) {
     console.log(e)
   }
@@ -18,6 +19,14 @@ export const getById = async (id) => {
 export const getByUsername = async (username) => {
   try {
     return await axios_proxy.get(`/getByUsername?username=${username}`)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const getIdByToken = async () => {
+  try {
+    return await axios_proxy.get(`/getIdByToken`)
   } catch (e) {
     console.log(e)
   }

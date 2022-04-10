@@ -8,6 +8,7 @@ const messages = require('./messages')
 
 router.get('/users/getById', authMiddleware, users.getById);
 router.get('/users/getByUsername', authMiddleware, users.getByUsername);
+router.get('/users/getIdByToken', authMiddleware, users.getIdByToken);
 
 router.post('/auth/registration', [
   check('username', "The username should be out of 1-15 symbols").isLength({min: 1, max: 15}),

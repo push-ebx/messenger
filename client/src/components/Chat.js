@@ -3,20 +3,28 @@ import GlassPanel from "./UI/glassPanel/GlassPanel";
 import GlassInput from "./UI/glassInput/GlassInput";
 import Message from "./Message/Message";
 import {registration, login} from '../API/methods/auth'
-import {getById, getByUsername} from "../API/methods/users";
+import {getById, getByUsername, getIdByToken} from "../API/methods/users";
 import {createConversation, getConversationById, getConversations, send} from "../API/methods/messages";
 import cookie from 'cookie'
 import socket from "../API/socket";
 import events from "../events"
 import {Col} from "react-bootstrap";
+import {useParams} from "react-router-dom";
 
 const Chat = (props) => {
   const [messages, setMessages] = useState([]);
+  const params = useParams()
   const inputRef = useRef();
+  const [thisUser, setThisUser] = useState({id: null, username: "NoName", first_name: "NoName", last_name: "NoName", sex: null})
 
-  useEffect(() => {
-    // send({receiver_id: 18, text: "Как сам?"})
-    getConversationById(18).then((res) => res && setMessages(res.data))
+  const getConv = async () => {
+    if (params.id) await getConversationById(params?.id).then((res) => res && setMessages(res.data))
+  }
+
+  useEffect(async () => {
+    await getById().then(res => setThisUser(prevState => res.data))
+    await getConv()
+    scrollToBottom('messages')
   }, []);
 
   useEffect(() => {
@@ -24,20 +32,23 @@ const Chat = (props) => {
     // socket.on(events.IS_ONLINE, e => console.log(e));
     // socket.on(events.MESSAGE_GET, e => console.log(e.message?.text))
     // window.socket = socket
-
     console.log(messages)
   }, [messages]);
-
+  const scrollToBottom = (id) => {
+    const element = document.getElementById(id);
+    element.scrollTop = element.scrollHeight;
+  }
   const check = async (e) => {
     if (e.keyCode === 13) {
       const mes = {
-        receiver_id: 18,
+        receiver_id: params.id,
         text: inputRef.current.value
       };
       // socket.emit(events.MESSAGE_SEND, mes);
       inputRef.current.value = '';
       send(mes);
-      getConversationById(18).then((res) => res && setMessages(prevState => res.data))
+      await getConv()
+      scrollToBottom('messages')
     }
   }
 
@@ -51,9 +62,10 @@ const Chat = (props) => {
           flexDirection: 'column',
           justifyContent: 'end'
         }}>
-          <div className="messages">
+          <div className="messages" id="messages">
             {messages.map(mes =>
-                <Message right={Boolean(mes.sender_id === 17)} time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
+                <Message right={Boolean(mes.sender_id === thisUser.id)}
+                         time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
                          key={mes.id}>
                   {mes.text}
                 </Message>

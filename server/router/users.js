@@ -3,7 +3,7 @@ const UserSchema = require('../models/User')
 class Users {
   async getById(req, res) {
     try {
-      if (!/^\d+$/.test(req.query.id)) {
+      if (!/^\d+$/.test(req.query.id) && req.query.id) {
         return res.status(200).json({
           error: {
             code: 422,
@@ -11,7 +11,8 @@ class Users {
           }
         })
       }
-      const user = (await UserSchema.findOne({id: req.query.id}))?.toObject()
+      const user = (await UserSchema.findOne({id: !req.query.id ? req.user_id : req.query.id}))?.toObject()
+
       if (user) {
         delete user.password;
         delete user._id;
@@ -54,6 +55,16 @@ class Users {
           error_message: "User with such ID not found"
         }
       })
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({message: 'An unforeseen error occurred'})
+    }
+  }
+
+  async getIdByToken(req, res) {
+    try {
+      console.log(req)
+      return res.status(200).json({id: req.user_id})
     } catch (e) {
       console.log(e)
       res.status(400).json({message: 'An unforeseen error occurred'})

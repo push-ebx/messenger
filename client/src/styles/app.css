@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
 
 * {
-  /*margin: 0;*/
-  /*padding: 0;*/
-  /*box-sizing: border-box;*/
-  /*font-family: 'Inter', sans-serif;*/
   font-family: 'Rubik', sans-serif;
   font-style: normal;
   font-weight: 300;
@@ -14,31 +10,24 @@
 }
 
 body {
-  /*overflow: hidden;*/
-}
-
-.App {
-  /*display: flex;*/
-  /*flex-direction: column;*/
-  /*align-items: center;*/
   width: 100vw;
   height: 100vh;
   background: url("../assets/background-app.png") no-repeat center center fixed;
   background-size: cover;
 }
 
-/* ------------------------ */
-
 .py-3 {
-  padding-top: 1rem!important;
-  padding-bottom: 1rem!important;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
 }
+
 .px-4 {
-  padding-right: 1.5rem!important;
-  padding-left: 1.5rem!important;
+  padding-right: 1.5rem !important;
+  padding-left: 1.5rem !important;
 }
+
 .flex-grow-0 {
-  flex-grow: 0!important;
+  flex-grow: 0 !important;
 }
 
 .glass {
@@ -47,44 +36,37 @@ body {
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
-  /*padding: 5px;*/
 }
 
-.messages{
-  /*position: absolute;*/
-  /*bottom: 80px;*/
+.messages {
   width: 100%;
   height: 100%;
   overflow-y: auto;
+  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  /*margin: 20px 20px 0 20px;*/
-  /*margin-left: 10px;*/
+  padding: 0 15px;
 }
 
-/* ===== Scrollbar CSS ===== */
-/* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(210, 210, 210, 0.75) rgba(0,0,0,0);
+  scrollbar-color: rgba(210, 210, 210, 0.75) rgba(0, 0, 0, 0);
 }
 
-/* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 5px;
 }
 
 *::-webkit-scrollbar-track {
-  background: rgba(210, 210, 210, 0);
+  background: rgba(0, 0, 0, 0);
 }
 
 *::-webkit-scrollbar-thumb {
-  /*background-color: red;*/
   border-radius: 15px;
   border: 15px solid rgba(210, 210, 210, 0.75);
 }
 
-.chat{
+.chat {
   height: 100%;
   width: 100%;
 }

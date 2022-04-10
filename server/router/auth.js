@@ -8,7 +8,7 @@ const generateAccessToken = (id) => {
   const payload = {
     id
   }
-  return jwt.sign(payload, process.env.SECRET, {expiresIn: "24h"})
+  return jwt.sign(payload, process.env.SECRET, {expiresIn: "365d"})
 }
 
 class Auth {
