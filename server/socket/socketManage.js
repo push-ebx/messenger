@@ -8,7 +8,7 @@ module.exports = io => socket => {
   console.log(socket.id, "is connected")
   socket.on(events.MESSAGE_SEND, message => {
     console.log(message)
-    io.emit(events.MESSAGE_GET, {message})
+    io.emit(events.MESSAGE_GET, message)
   });
   // socket.on(events.IS_ONLINE, user => {
   //   console.log(user?.token)

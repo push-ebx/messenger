@@ -16,8 +16,9 @@ class Messages {
         receiver_id,
         text
       })
-      new_message.save().then(() => console.log("Message sent successfully"))
-      return res.status(200).json({mes: "Message sent successfully"})
+      let mes = {};
+      await new_message.save().then((res) => mes = res)
+      return res.status(200).json(mes)
     } catch (e) {
       console.log(e)
       res.status(400).json({message: 'Error. The message was not sent'})

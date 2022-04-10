@@ -15,7 +15,13 @@ const Chat = (props) => {
   const [messages, setMessages] = useState([]);
   const params = useParams()
   const inputRef = useRef();
-  const [thisUser, setThisUser] = useState({id: null, username: "NoName", first_name: "NoName", last_name: "NoName", sex: null})
+  const [thisUser, setThisUser] = useState({
+    id: null,
+    username: "NoName",
+    first_name: "NoName",
+    last_name: "NoName",
+    sex: null
+  })
 
   const getConv = async () => {
     if (params.id) await getConversationById(params?.id).then((res) => res && setMessages(res.data))
@@ -23,6 +29,12 @@ const Chat = (props) => {
 
   useEffect(async () => {
     await getById().then(res => setThisUser(prevState => res.data))
+    await socket.on(events.MESSAGE_GET, mes => {
+      if(mes.sender_id !== thisUser.id) {
+        setMessages(prevState => [...prevState, {...mes, _id: mes?._id}])
+        scrollToBottom('messages')
+      }
+    })
     await getConv()
     scrollToBottom('messages')
   }, []);
@@ -32,7 +44,6 @@ const Chat = (props) => {
     // socket.on(events.IS_ONLINE, e => console.log(e));
     // socket.on(events.MESSAGE_GET, e => console.log(e.message?.text))
     // window.socket = socket
-    console.log(messages)
   }, [messages]);
   const scrollToBottom = (id) => {
     const element = document.getElementById(id);
@@ -42,12 +53,17 @@ const Chat = (props) => {
     if (e.keyCode === 13) {
       const mes = {
         receiver_id: params.id,
+        sender_id: thisUser.id,
         text: inputRef.current.value
       };
-      // socket.emit(events.MESSAGE_SEND, mes);
       inputRef.current.value = '';
-      send(mes);
-      await getConv()
+      await send(mes).then(res => {
+        // setMessages(prevState =>
+        //     [...prevState, {...mes, _id: res?.data._id}]
+        // )
+        console.log("3")
+        socket.emit(events.MESSAGE_SEND, {...mes, _id: res?.data._id});
+      }) /// catch text is required
       scrollToBottom('messages')
     }
   }
@@ -66,7 +82,7 @@ const Chat = (props) => {
             {messages.map(mes =>
                 <Message right={Boolean(mes.sender_id === thisUser.id)}
                          time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
-                         key={mes.id}>
+                         key={mes._id}>
                   {mes.text}
                 </Message>
             )}
