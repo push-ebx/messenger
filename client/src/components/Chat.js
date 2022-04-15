@@ -11,11 +11,11 @@ import events from "../events"
 import {Col} from "react-bootstrap";
 import {useParams} from "react-router-dom";
 
-const Chat = (props) => {
-  const [messages, setMessages] = useState([]);
+const Chat = () => {
+  const [messages, setMessages] = useState([])
   const params = useParams()
-  const inputRef = useRef();
-  const [isLoad, setIsLoad] = useState(true);
+  const inputRef = useRef()
+  const [isLoad, setIsLoad] = useState(true)
   const [thisUser, setThisUser] = useState({
     id: null,
     username: "NoName",
@@ -23,6 +23,7 @@ const Chat = (props) => {
     last_name: "NoName",
     sex: null
   })
+  const [companation, setCompanation] = useState({})
 
   const getConv = async () => {
     if (params.id) await getConversationById(params?.id).then((res) => res && setMessages(res.data))
@@ -41,7 +42,6 @@ const Chat = (props) => {
     console.log(messages)
   }
 
-  // not async
   useEffect(() => {
     foo()
     console.log('TEST')
@@ -99,7 +99,7 @@ const Chat = (props) => {
                   )}
                 </>
                 :
-                <h6>Загрузка...</h6>
+                <h3 style={{margin: "auto"}}>Загрузка...</h3>
             }
           </div>
           <div className="flex-grow-0 px-4" style={{marginBottom: '15px'}}>

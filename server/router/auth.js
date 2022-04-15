@@ -28,7 +28,7 @@ class Auth {
       if (candidate) {
         return res.status(200).json({
           error: {
-            code: 422,
+            code: 421,
             error_message: "The user has already been created"
           }
         })
@@ -44,8 +44,9 @@ class Auth {
         last_name,
         sex
       });
+      const token = generateAccessToken(user.id)
       user.save().then(() => console.log(`User successfully registered with id: ${count + 1}`));
-      res.status(200).json({message: `User successfully registered with id: ${count + 1}`})
+      res.status(200).json({message: `User successfully registered with id: ${count + 1}`, token})
     } catch (e) {
       console.log(e)
       res.status(400).json({message: 'Registration error'})
