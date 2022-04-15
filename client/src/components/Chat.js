@@ -15,6 +15,7 @@ const Chat = (props) => {
   const [messages, setMessages] = useState([]);
   const params = useParams()
   const inputRef = useRef();
+  const [isLoad, setIsLoad] = useState(true);
   const [thisUser, setThisUser] = useState({
     id: null,
     username: "NoName",
@@ -27,16 +28,24 @@ const Chat = (props) => {
     if (params.id) await getConversationById(params?.id).then((res) => res && setMessages(res.data))
   }
 
-  useEffect(async () => {
+  const foo = async () => {
     await getById().then(res => setThisUser(prevState => res.data))
     await socket.on(events.MESSAGE_GET, mes => {
-      if(mes.sender_id !== thisUser.id) {
+      if (mes.sender_id !== thisUser.id) {
         setMessages(prevState => [...prevState, {...mes, _id: mes?._id}])
         scrollToBottom('messages')
       }
     })
-    await getConv()
+    await getConv().then(setIsLoad(false))
     scrollToBottom('messages')
+    console.log(messages)
+  }
+
+  // not async
+  useEffect(() => {
+    foo()
+    console.log('TEST')
+    console.log(messages)
   }, []);
 
   useEffect(() => {
@@ -61,7 +70,6 @@ const Chat = (props) => {
         // setMessages(prevState =>
         //     [...prevState, {...mes, _id: res?.data._id}]
         // )
-        console.log("3")
         socket.emit(events.MESSAGE_SEND, {...mes, _id: res?.data._id});
       }) /// catch text is required
       scrollToBottom('messages')
@@ -79,13 +87,20 @@ const Chat = (props) => {
           justifyContent: 'end'
         }}>
           <div className="messages" id="messages">
-            {messages.map(mes =>
-                <Message right={Boolean(mes.sender_id === thisUser.id)}
-                         time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
-                         key={mes._id}>
-                  {mes.text}
-                </Message>
-            )}
+            {!isLoad
+                ?
+                <>
+                  {messages.map(mes =>
+                      <Message right={Boolean(mes.sender_id === thisUser.id)}
+                               time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
+                               key={mes._id}>
+                        {mes.text}
+                      </Message>
+                  )}
+                </>
+                :
+                <h6>Загрузка...</h6>
+            }
           </div>
           <div className="flex-grow-0 px-4" style={{marginBottom: '15px'}}>
             <GlassInput onKeyDown={(e => check(e))} ref={inputRef}/>
