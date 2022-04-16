@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const cookie = require('cookie')
 
 const axios_proxy = axios.create({

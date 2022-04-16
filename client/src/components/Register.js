@@ -2,7 +2,7 @@ import React, {useContext, useRef} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {registration} from '../API/methods/auth'
 import {useHistory} from "react-router-dom";
-import {AuthContext} from "../context";
+import {AuthContext} from "../context/auth_context";
 
 const Register = () => {
   const username = useRef();
@@ -41,6 +41,7 @@ const Register = () => {
           <input ref={last_name} type="text" className="form-control" id="last_name" placeholder="Last name"/>
           <input style={{margin:'10px'}} ref={password} type="password" className="form-control" id="password" placeholder="Password"/>
           <button type="button" className="btn btn-success" onClick={register} style={{width: '100%'}}>Зарегистрироваться</button>
+          <button type="button" className="btn btn-primary" style={{width: '100%', margin: 10}} onClick={() => router.push('/login')}>Войти</button>
         </div>
       </div>
   );
