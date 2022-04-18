@@ -1,16 +1,18 @@
-import React, {useContext, useRef} from 'react';
+import React, {useRef} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {registration} from '../API/methods/auth'
 import {useHistory} from "react-router-dom";
-import {AuthContext} from "../context/auth_context";
+import {useDispatch} from "react-redux";
+import {switchIsAuthAction} from "../store/authReducer";
 
 const Register = () => {
+  const dispatch = useDispatch()
   const username = useRef();
   const password = useRef();
   const first_name = useRef();
   const last_name = useRef();
   const router = useHistory()
-  const {isAuth, setIsAuth} = useContext(AuthContext);
+
 
   const register = () => {
     const new_user = {
@@ -27,7 +29,7 @@ const Register = () => {
         error_code === 422 && console.log(res.data.error);
       } else {
         document.cookie = `access_token=${res.data.token}; expires=Tue, 19 Jan 2038 03:14:07 UTC;`;
-        setIsAuth(true);
+        dispatch(switchIsAuthAction(true));
         router.push("/chats")
       }
     }).catch(err => err.response.status === 400 && console.log("Registration error"));

@@ -1,21 +1,24 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Redirect, Route, Switch, useHistory} from "react-router-dom";
 import Login from "./Login";
 import {Col, Row} from "react-bootstrap";
 import Chat from "./Chat";
-import {AuthContext} from "../context/auth_context";
 import Register from "./Register";
 import ListChats from "./ListChats";
+import {useDispatch, useSelector} from "react-redux";
+import {switchIsAuthAction} from "../store/authReducer";
 
 const AppRouter = () => {
-  const {isAuth, setIsAuth} = useContext(AuthContext)
+  const dispatch = useDispatch()
+  const thisUser = useSelector(state => state.thisUserReducer.thisUser)
+  const isAuth = useSelector(state => state.authReducer.isAuth)
   const router = useHistory()
 
   const LogOut = () => {
     document.cookie.split(";").forEach(function (c) {
       document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
-    setIsAuth(false)
+    dispatch(switchIsAuthAction(false))
     router.push('/login')
   }
 
@@ -27,10 +30,10 @@ const AppRouter = () => {
               <button style={{margin: '15px', position: 'absolute'}} className={'btn btn-primary'}
                       onClick={LogOut}>Выход
               </button>
-              <div className="container-lg container-fluid">
+              <div className="container-lg container-fluid align-content-center">
                 <Row className="px-md-5" style={{height: '100vh'}}>
-                  <Col md={4} style={{height: '100%', padding: '1vh 0'}} className="d-none d-lg-block">
-                    <Col className="glass" style={{height: '15%', marginRight: '1vh'}}>Поиск</Col>
+                  <Col md={4} xl={3} style={{height: '100%', padding: '1vh 0'}} className="d-none d-lg-block">
+                    <Col className="glass" style={{height: '15%', marginRight: '1vh'}}>{thisUser.first_name} {thisUser.last_name}</Col>
                     <Col className="glass listChat-wrapper" style={{height: '84%', marginTop: '1vh', marginRight: '1vh'}}>
                       <ListChats/>
                     </Col>
@@ -47,8 +50,9 @@ const AppRouter = () => {
                 <Row className="px-md-5" style={{height: '100vh'}}>
                   <Col md={4} style={{height: '100%', padding: '1vh 0'}} className="d-none d-lg-block">
                     <Col className="glass" style={{height: '15%', marginRight: '1vh'}}>Поиск</Col>
-                    <Col className="glass" style={{height: '84%', marginTop: '1vh', marginRight: '1vh'}}>Сообщения</Col>
-                    <ListChats/>
+                    <Col className="glass listChat-wrapper" style={{height: '84%', marginTop: '1vh', marginRight: '1vh'}}>
+                      <ListChats/>
+                    </Col>
                   </Col>
                   <Chat/>
                 </Row>

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import GlassInput from "./UI/glassInput/GlassInput";
 import Message from "./Message/Message";
 import {getById} from "../API/methods/users";
@@ -7,25 +7,27 @@ import socket from "../API/socket";
 import events from "../events"
 import {Col} from "react-bootstrap";
 import {useParams} from "react-router-dom";
-import {ThisUserContext} from "../context/thisUser_context";
-import {CompanionContext} from "../context/companion_context";
+import {useDispatch, useSelector} from "react-redux";
+import {setThisUserAction} from "../store/thisUserReducer";
+import {setCompanionAction} from "../store/companionReducer";
 
 const Chat = () => {
-  const [messages, setMessages] = useState([])
-  const params = useParams()
+  const dispatch = useDispatch()
   const inputRef = useRef()
+  const params = useParams()
+  const [messages, setMessages] = useState([])
   const [isLoadMessages, setIsLoadMessages] = useState(true)
   const [isLoadCompanion, setIsLoadCompanion] = useState(true)
-  const {thisUser, setThisUser} = useContext(ThisUserContext)
-  const {companion, setCompanion} = useContext(CompanionContext)
+  const thisUser = useSelector(state => state.thisUserReducer.thisUser)
+  const companion = useSelector(state => state.companionReducer.companion)
 
   const getConv = async () => {
     if (params.id) await getConversationById(params?.id).then((res) => res && setMessages(res.data))
   }
 
   const foo = async () => {
-    await getById(params?.id).then(res => setCompanion(res.data)).then(setIsLoadCompanion(false))
-    await getById().then(res => setThisUser(res.data))
+    await getById(params?.id).then(res => dispatch(setCompanionAction(res.data))).then(setIsLoadCompanion(false))
+    await getById().then(res => dispatch(setThisUserAction(res.data)))
     await socket.on(events.MESSAGE_GET, mes => {
       if (mes.sender_id !== thisUser.id) {
         setMessages(prevState => [...prevState, {...mes, _id: mes?._id}])
@@ -59,6 +61,7 @@ const Chat = () => {
   }
   const check = async (e) => {
     if (e.keyCode === 13) {
+      if (!inputRef.current.value.trim()) return;
       const mes = {
         receiver_id: params.id,
         sender_id: thisUser.id,
@@ -76,7 +79,7 @@ const Chat = () => {
   }
 
   return (
-      <Col style={{height: '100%', padding: '1vh 0'}} className="col-12 col-lg-8">
+      <Col style={{height: '100%', padding: '1vh 0'}} className="col-12 col-lg-8 col">
         <Col className="glass" style={{height: '10%'}}>
           {
               !isLoadCompanion
