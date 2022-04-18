@@ -2,7 +2,6 @@ const {validationResult} = require("express-validator");
 const UserSchema = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
-require('dotenv').config({path: "../.env"});
 
 const generateAccessToken = (id) => {
   const payload = {

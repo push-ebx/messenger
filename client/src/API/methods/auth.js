@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axios_proxy = axios.create({
-  baseURL: `http://localhost:5000/api/auth/`
+  baseURL: `${process.env.REACT_APP_BASE_URL}/api/auth/`
 });
 
 export const login = async (username, password) => {

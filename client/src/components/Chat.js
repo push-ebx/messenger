@@ -43,7 +43,6 @@ const Chat = () => {
   }, []);
 
   useEffect(async () => {
-    console.log(1343567)
     await getConv().then(setIsLoadMessages(false))
     scrollToBottom('messages')
   }, [companion])

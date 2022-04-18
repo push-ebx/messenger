@@ -2,7 +2,7 @@ import axios from 'axios';
 const cookie = require('cookie')
 
 const axios_proxy = axios.create({
-  baseURL: `http://localhost:5000/api/users/`
+  baseURL: `${process.env.REACT_APP_BASE_URL}/api/users/`
 });
 
 export const getById = async (id) => {
