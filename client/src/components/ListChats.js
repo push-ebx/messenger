@@ -31,7 +31,7 @@ const ListChats = () => {
 
   const selectDialog = async (e) =>{
     const id = e.target.dataset.value
-    await getById(id).then(res => dispatch(setCompanionAction(res.data)))
+    // await getById(id).then(res => dispatch(setCompanionAction(res.data)))
     router.push(`/chats/${id}`)
   }
 

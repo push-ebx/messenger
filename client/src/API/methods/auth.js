@@ -7,8 +7,8 @@ const axios_proxy = axios.create({
 export const login = async (username, password) => {
   try {
     return await axios_proxy.post('/login', {username, password})
-  } catch (e) {
-    console.log(e)
+  } catch (_) {
+    console.log(_)
   }
 }
 
