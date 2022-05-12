@@ -16,7 +16,7 @@ router.post('/auth/registration', [
   check('first_name', "First name should be out of 4-20 symbols").isLength({min: 1, max: 20}),
   check('last_name', "Last name should be out of 4-20 symbols").isLength({min: 1, max: 20}),
   check('sex').custom(value => {
-    if (![1, 2].includes(value)) throw new Error("Sex should have value 1 or 2")
+    if (![1, 2].includes(value)) throw new Error("Sex should have value 1 or 2 fuck you otherwise")
     return true
   })
 ], auth.registration);

@@ -8,7 +8,7 @@ const defaultState = {
   }
 }
 
-export const SET_COMPANION = "SWITCH_IS_AUTH"
+export const SET_COMPANION = "SET_COMPANION"
 
 export const companionReducer = (state=defaultState, action) => {
   switch (action.type) {

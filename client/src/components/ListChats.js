@@ -2,12 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {getConversations} from "../API/methods/messages";
 import "../styles/app.css";
 import {useHistory} from "react-router-dom";
-import {getById} from "../API/methods/users";
 import {useDispatch, useSelector} from "react-redux";
-import {setCompanionAction} from "../store/companionReducer";
 
 const ListChats = () => {
-  const dispatch = useDispatch()
   const thisUser = useSelector(state => state.thisUserReducer.thisUser)
   const [list, setList] = useState([])
   const [isLoadList, setIsLoadList] = useState(true)
@@ -15,7 +12,6 @@ const ListChats = () => {
 
   const foo = async () => {
     await getConversations().then(res => {
-      console.log(res.data)
       setList(res.data)
       setIsLoadList(false)
     })
@@ -31,7 +27,6 @@ const ListChats = () => {
 
   const selectDialog = async (e) =>{
     const id = e.target.dataset.value
-    // await getById(id).then(res => dispatch(setCompanionAction(res.data)))
     router.push(`/chats/${id}`)
   }
 

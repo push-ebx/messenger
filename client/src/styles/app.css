@@ -52,7 +52,7 @@ body {
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  padding: 0 20px 0 20px;
+  padding: 10px 20px 0 20px;
   justify-content: flex-start;
 }
 

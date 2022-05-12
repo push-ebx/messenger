@@ -27,28 +27,45 @@ const Chat = () => {
   }
 
   const foo = async () => {
+    let _companion, _thisUser;
     if (params.id) {
-      await getById(params.id).then(res => dispatch(setCompanionAction(res.data)))
+      await getById(params.id).then(res => {
+        _companion = res.data
+        dispatch(setCompanionAction(_companion));
+      });
+      await getById().then(res => {
+        _thisUser = res.data
+        dispatch(setThisUserAction(_thisUser));
+      });
     }
-    await getById().then(res => dispatch(setThisUserAction(res.data)))
+
     await socket.on(events.MESSAGE_GET, mes => {
-      if (mes.sender_id !== thisUser.id) {
+      if (mes.sender_id !== _thisUser.id) {
         setMessages(prevState => [...prevState, {...mes, _id: mes?._id}])
-        companion.id && scrollToBottom('messages')
+        _companion.id && scrollToBottom('messages')
       }
     })
-    await getConv().then(setIsLoadMessages(false))
-    companion.id && scrollToBottom('messages')
+  }
+
+  const bar = async () => {
+    let _companion;
+    if (params.id) {
+      await getById(params.id).then(res => {
+        _companion = res.data
+        dispatch(setCompanionAction(_companion));
+      });
+    }
+
+    await getConv().then(setIsLoadMessages(false), console.log)
+    _companion.id && scrollToBottom('messages')
   }
 
   useEffect(() => {
-    console.log("render")
     foo()
   }, []);
 
-  useEffect(async () => {
-    console.log("switch")
-    foo()
+  useEffect(() => {
+    bar()
   }, [params.id])
 
   useEffect(() => {
@@ -56,14 +73,14 @@ const Chat = () => {
     // socket.on(events.IS_ONLINE, e => console.log(e));
     // socket.on(events.MESSAGE_GET, e => console.log(e.message?.text))
     // window.socket = socket
-
   }, [messages, isLoadMessages]);
+
   const scrollToBottom = (id) => {
     const element = document.getElementById(id);
     element.scrollTop = element.scrollHeight;
   }
+
   const check = async (e) => {
-    console.log(companion)
     if (e.keyCode === 13) {
       if (!inputRef.current.value.trim()) return;
       const mes = {
@@ -73,9 +90,9 @@ const Chat = () => {
       };
       inputRef.current.value = '';
       await send(mes).then(res => {
-        // setMessages(prevState =>
-        //     [...prevState, {...mes, _id: res?.data._id}]
-        // )
+        setMessages(prevState =>
+            [...prevState, {...mes, _id: res?.data._id}]
+        )
         socket.emit(events.MESSAGE_SEND, {...mes, _id: res?.data._id});
       }) /// catch text is required
       scrollToBottom('messages')
@@ -111,7 +128,7 @@ const Chat = () => {
           marginTop: '1vh',
           display: "flex",
           flexDirection: 'column',
-          paddingTop: 10
+          paddingTop: 0
         }}>
           {
             companion.id ?
@@ -137,8 +154,8 @@ const Chat = () => {
                         <h3 style={{margin: "auto"}}>Загрузка...</h3>
                     }
                   </div>
-                  <div className="flex-grow-0 px-4" style={{marginBottom: '15px'}}>
-                    <GlassInput autoFocus placeholder="Message..." onKeyDown={(e => check(e))} ref={inputRef}/>
+                  <div className="flex-grow-0" style={{marginBottom: '0px'}}>
+                    <GlassInput style={{border:'none', borderRadius: "0 0 10px 10px"}} autoFocus placeholder="Message..." onKeyDown={(e => check(e))} ref={inputRef}/>
                   </div>
                 </div>
                 :
