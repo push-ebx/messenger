@@ -32,7 +32,7 @@ body {
 }
 
 .glass {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.27);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -54,6 +54,7 @@ body {
   flex-direction: column;
   padding: 10px 20px 10px 20px;
   justify-content: flex-start;
+  /*clip-path: inset(0px round 0px 10px);*/
 }
 
 * {
@@ -66,12 +67,17 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.messages::-webkit-scrollbar-track{
+  margin: 7px;
 }
 
 *::-webkit-scrollbar-thumb {
   border-radius: 15px;
-  border: 15px solid rgba(210, 210, 210, 0.75);
+  border: 15px solid rgba(210, 210, 210, 0.6);
 }
 
 .chat {
@@ -121,11 +127,11 @@ body {
   height: 100%;
   overflow-y: auto;
   scroll-behavior: smooth;
-  border-radius: 0;
+  border-radius: 10px;
 }
 
 .listChat-wrapper{
-  clip-path: inset(0px round 10px);
+  /*clip-path: inset(0px round 10px);*/
 }
 
 .send-btn {

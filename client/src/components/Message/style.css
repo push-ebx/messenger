@@ -1,10 +1,10 @@
 .message{
-  border-radius: 15px;
+  border-radius: 13.333px;
   margin: 0 5px;
   max-width: 300px;
-  background: rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: rgba(0, 0, 0, 0.30);
+  /*backdrop-filter: blur(10px);*/
+  /*-webkit-backdrop-filter: blur(30px);*/
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   margin-bottom: 5px;
