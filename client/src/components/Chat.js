@@ -22,10 +22,6 @@ const Chat = () => {
   const companion = useSelector(state => state.companionReducer.companion)
   const router = useHistory();
 
-  const getConv = async () => {
-    if (params.id) await getConversationById(params?.id).then((res) => res && setMessages(res.data))
-  }
-
   const foo = async () => {
     let _companion, _thisUser;
     if (params.id) {
@@ -48,16 +44,8 @@ const Chat = () => {
   }
 
   const bar = async () => {
-    let _companion;
-    if (params.id) {
-      await getById(params.id).then(res => {
-        _companion = res.data
-        dispatch(setCompanionAction(_companion));
-      });
-    }
-
-    await getConv().then(setIsLoadMessages(false), console.log)
-    _companion.id && scrollToBottom('messages')
+    companion.id && await getConversationById(companion.id).then(res => setMessages(res.data)).then(setIsLoadMessages(false))
+    scrollToBottom('messages')
   }
 
   useEffect(() => {
@@ -66,7 +54,7 @@ const Chat = () => {
 
   useEffect(() => {
     bar()
-  }, [params.id])
+  }, [companion])
 
   useEffect(() => {
     // socket.emit(events.IS_ONLINE, {token:cookie.parse(document.cookie).access_token});
@@ -77,26 +65,24 @@ const Chat = () => {
 
   const scrollToBottom = (id) => {
     const element = document.getElementById(id);
-    element.scrollTop = element.scrollHeight;
+    if (element) element.scrollTop = element.scrollHeight;
   }
 
-  const check = async (e) => {
-    if (e.keyCode === 13) {
-      if (!inputRef.current.value.trim()) return;
-      const mes = {
-        receiver_id: params.id,
-        sender_id: thisUser.id,
-        text: inputRef.current.value
-      };
-      inputRef.current.value = '';
-      await send(mes).then(res => {
-        setMessages(prevState =>
-            [...prevState, {...mes, _id: res?.data._id}]
-        )
-        socket.emit(events.MESSAGE_SEND, {...mes, _id: res?.data._id});
-      }) /// catch text is required
-      scrollToBottom('messages')
-    }
+  const sendMessage = async () => {
+    if (!inputRef.current.value.trim()) return;
+    const mes = {
+      receiver_id: params.id,
+      sender_id: thisUser.id,
+      text: inputRef.current.value
+    };
+    inputRef.current.value = '';
+    await send(mes).then(res => {
+      setMessages(prevState =>
+          [...prevState, {...mes, _id: res?.data._id}]
+      )
+      socket.emit(events.MESSAGE_SEND, {...mes, _id: res?.data._id});
+    }) /// catch text is required
+    scrollToBottom('messages')
   }
 
   const Logout = () => {
@@ -112,57 +98,61 @@ const Chat = () => {
   }
 
   return (
-      <Col style={{height: '100%', padding: '1vh 0'}} className="col-12 col-lg-8 col">
-        <Col className="glass d-flex justify-content-between align-items-center" style={{height: '10%'}}>
-          {
-              companion.id
-              &&
-              <h5 style={{margin: '15px'}}>{companion.first_name} {companion.last_name}</h5>
-          }
-          <button style={{margin: '15px', width: 100, height: 50}} className={'glass'}
-                  onClick={Logout}>Logout
-          </button>
-        </Col>
-        <Col className="glass" style={{
-          height: '89%',
-          marginTop: '1vh',
-          display: "flex",
-          flexDirection: 'column',
-          paddingTop: 0
-        }}>
-          {
-            companion.id ?
-                <div style={{
-                  height: '100%',
-                  display: "flex",
-                  flexDirection: 'column',
-                  justifyContent: 'end'
-                }}>
-                  <div className="messages" id="messages">
-                    {!isLoadMessages
-                        ?
-                        <>
-                          {messages.map(mes =>
-                              <Message right={Number(mes.sender_id === thisUser.id)}
-                                       time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
-                                       key={mes._id}>
-                                {mes.text}
-                              </Message>
-                          )}
-                        </>
-                        :
-                        <h3 style={{margin: "auto"}}>Загрузка...</h3>
-                    }
-                  </div>
-                  <div className="flex-grow-0" style={{marginBottom: '0px'}}>
-                    <GlassInput style={{border:'none', borderRadius: "0 0 10px 10px"}} autoFocus placeholder="Message..." onKeyDown={(e => check(e))} ref={inputRef}/>
-                  </div>
-                </div>
-                :
-                <h4 style={{margin: "auto"}}>Выберите диалог</h4>
-          }
-        </Col>
+    <Col style={{height: '100%', padding: '1vh 0'}} className="col-12 col-lg-8 col">
+      <Col className="glass d-flex justify-content-between align-items-center" style={{height: '10%'}}>
+        {
+          companion.id
+            &&
+          <h5 style={{margin: '15px'}}>{companion.first_name} {companion.last_name}</h5>
+        }
+        <button style={{margin: '15px', width: 100, height: 50}} className={'glass'}
+                onClick={Logout}>Logout
+        </button>
       </Col>
+      <Col className="glass" style={{
+        height: '89%',
+        marginTop: '1vh',
+        display: "flex",
+        flexDirection: 'column',
+        paddingTop: 0
+      }}>
+        {
+          companion.id ?
+            <div style={{
+              height: '100%',
+              display: "flex",
+              flexDirection: 'column',
+              justifyContent: 'end'
+            }}>
+              <div className="messages" id="messages">
+                {!isLoadMessages
+                  ?
+                  <>
+                    {messages.map(mes =>
+                      <Message right={Number(mes.sender_id === thisUser.id)}
+                               time={`${(new Date()).getHours()}:${(new Date()).getMinutes()}`}
+                               key={mes._id}>
+                        {mes.text}
+                      </Message>
+                    )}
+                  </>
+                  :
+                  <h3 style={{margin: "auto"}}>Загрузка...</h3>
+                }
+              </div>
+              <div className="flex-grow-0" style={{marginBottom: '0px', display: "flex", position: "relative"}}>
+                <GlassInput style={{border:'none', borderRadius: "0 0 9px 9px"}}
+                            autoFocus placeholder="Message..."
+                            onKeyDown={(e => e.keyCode === 13 && sendMessage())}
+                            ref={inputRef}/>
+                <span className="material-symbols-outlined send-btn" onClick={() => sendMessage()}>send</span>
+              </div>
+            </div>
+            :
+            <h4 style={{margin: "auto"}}>Выберите диалог</h4>
+        }
+      </Col>
+    </Col>
   );
 };
 

@@ -27,11 +27,13 @@
 .time{
   font-size: 10px;
   opacity: 0.7;
-  margin: 15px 10px 5px 10px;
+  margin: auto 10px 4px 0;
 }
 
 .message_text{
   margin: 10px 15px;
   font-size: 15px;
   line-height: 105%;
+  word-break: break-word;
+  max-width: 300px;
 }

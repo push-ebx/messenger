@@ -52,7 +52,7 @@ body {
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  padding: 10px 20px 0 20px;
+  padding: 10px 20px 10px 20px;
   justify-content: flex-start;
 }
 
@@ -126,4 +126,12 @@ body {
 
 .listChat-wrapper{
   clip-path: inset(0px round 10px);
+}
+
+.send-btn {
+  position:absolute;
+  top: 25%;
+  right: 10px;
+  cursor: pointer;
+  user-select: none;
 }
