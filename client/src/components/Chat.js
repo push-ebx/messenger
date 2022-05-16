@@ -8,7 +8,6 @@ import events from "../events"
 import {Col} from "react-bootstrap";
 import {useHistory, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {setThisUserAction} from "../store/thisUserReducer";
 import {setCompanionAction} from "../store/companionReducer";
 import {switchIsAuthAction} from "../store/authReducer";
 
@@ -23,34 +22,24 @@ const Chat = () => {
   const router = useHistory();
 
   const foo = async () => {
-    let _companion, _thisUser;
-    if (params.id) {
-      await getById(params.id).then(res => {
-        _companion = res.data
-        dispatch(setCompanionAction(_companion));
-      });
-      await getById().then(res => {
-        _thisUser = res.data
-        dispatch(setThisUserAction(_thisUser));
-      });
-    }
-
-    await socket.on(events.MESSAGE_GET, mes => {
-      if (mes.sender_id !== _thisUser.id) {
+    companion.id && await socket.on(events.MESSAGE_GET, mes => {
+      console.log(thisUser)
+      if (mes.sender_id !== thisUser.id) {
         setMessages(prevState => [...prevState, {...mes, _id: mes?._id}])
-        _companion.id && scrollToBottom('messages')
+        companion.id && scrollToBottom('messages')
       }
     })
   }
 
   const bar = async () => {
+    companion.id === null && params.id && await getById(params.id).then(res => dispatch(setCompanionAction(res.data)))
     companion.id && await getConversationById(companion.id).then(res => setMessages(res.data)).then(setIsLoadMessages(false))
     scrollToBottom('messages')
   }
 
   useEffect(() => {
     foo()
-  }, []);
+  }, [thisUser, companion]);
 
   useEffect(() => {
     bar()

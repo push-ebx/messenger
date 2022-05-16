@@ -4,11 +4,16 @@ import Login from "./Login";
 import {Row} from "react-bootstrap";
 import Chat from "./Chat";
 import Register from "./Register";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Sidebar from "./Sidebar";
+import {getById} from "../API/methods/users";
+import {setThisUserAction} from "../store/thisUserReducer";
 
 const AppRouter = () => {
   const isAuth = useSelector(state => state.authReducer.isAuth);
+  const dispatch = useDispatch()
+  isAuth && (async () => await getById().then(res => dispatch(setThisUserAction(res.data))))()
+
   return (
       isAuth
           ?

@@ -28,7 +28,7 @@ const ListChats = () => {
     return dialog.first_user.id === thisUser.id ? dialog.second_user.id : dialog.first_user.id
   }
 
-  const selectDialog = async (e) =>{
+  const selectDialog = async (e) => {
     const id = e.target.dataset.value
     await getById(id).then(res => dispatch(setCompanionAction(res.data)))
     router.push(`/chats/${id}`)
