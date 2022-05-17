@@ -110,7 +110,7 @@ const Chat = () => {
         paddingTop: 0
       }}>
         {
-          companion.id ?
+         companion.id ?
             <div style={{
               height: '100%',
               display: "flex",
