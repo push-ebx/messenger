@@ -1,12 +1,30 @@
-const { Titlebar, Color } = require('custom-electron-titlebar');
-const path = require('path');
+const {ipcRenderer, contextBridge} = require('electron')
+const notifier = require('node-notifier');
 
-let titlebar;
+const showNotification = ({message, sender})  => {
+  notifier.notify({
+    title: sender,
+    message,
+    sound: true,
+    wait: true
+  });
+}
 
-window.addEventListener('DOMContentLoaded', () => {
-  titlebar = new Titlebar({
-    backgroundColor: Color.fromHex("#388e3c"),
-    // icon: null,
-    menu: null
-  })
+contextBridge.exposeInMainWorld("myApp", {
+  sayHello: (arg) => {
+    showNotification(arg)
+  },
+  send: (channel, data) => {
+    // let validChannels = ["toMain"];
+    // if (validChannels.includes(channel)) {
+      console.log(data)
+      ipcRenderer.send('toMain', 'data');
+    // }
+  }
+  // receive: (channel, func) => {
+  //   let validChannels = ["fromMain"];
+  //   if (validChannels.includes(channel)) {
+  //     ipcRenderer.on(channel, (event, ...args) => func(...args));
+  //   }
+  // }
 })

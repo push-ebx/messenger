@@ -1,37 +1,42 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
-const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
-
-setupTitlebar();
-
+let win, is_focus
 function createWindow () {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
-    titleBarStyle: 'hidden',
-    frame: false,
-    icon: null,
+    // titleBarStyle: 'hidden',
+    // frame: false,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
     }
   })
   win.setMenu(null)
   win.loadURL('http://localhost:3000');
-  attachTitlebarToWindow(win);
+  win.webContents.openDevTools()
+
+  win.on('focus', () => {
+    console.log('window got focus')
+    is_focus = true
+  })
+
+  win.on('blur', () => {
+    console.log('window blur')
+    is_focus = false
+  })
 }
 
-app.whenReady().then(() => {
-  createWindow()
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
-})
+app.setAppUserModelId(process.execPath)
+app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
+
+// ipcMain.on("toMain", (event, args) => {
+//   win.webContents.send("fromMain", is_focus);
+// });
+//
+// win.webContents.send("fromMain", 'is_focus');

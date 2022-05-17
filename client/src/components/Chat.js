@@ -22,11 +22,15 @@ const Chat = () => {
   const router = useHistory();
 
   const foo = async () => {
-    companion.id && await socket.on(events.MESSAGE_GET, mes => {
-      console.log(thisUser)
-      if (mes.sender_id !== thisUser.id) {
+    await socket.on(events.MESSAGE_GET, async mes => {
+      if (mes.sender_id === companion.id) {
         setMessages(prevState => [...prevState, {...mes, _id: mes?._id}])
         companion.id && scrollToBottom('messages')
+      }
+      if (mes.sender_id !== thisUser.id && +mes.receiver_id === thisUser.id) {
+        await getById(mes.sender_id).then(res => {
+          window.myApp.sayHello({message: mes.text, sender: res.data.first_name})
+        })
       }
     })
   }
