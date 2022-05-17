@@ -55,7 +55,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://server-alpha-one.vercel.app",
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
