@@ -42,6 +42,13 @@ const Chat = () => {
   }
 
   useEffect(() => {
+    thisUser.id && socket.emit(events.NEW_USER, thisUser)
+    socket.on(events.IS_ONLINE, user => {
+      console.log(user)
+    })
+  }, [thisUser])
+
+  useEffect(() => {
     foo()
   }, [thisUser, companion]);
 
