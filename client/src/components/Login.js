@@ -34,9 +34,9 @@ const Login = () => {
   return (
       <div className="container d-flex justify-content-center align-items-center">
         <div className="col-3 d-flex flex-column align-items-center" style={{margin: "25%"}}>
-          <input ref={log} type="text" className="form-control" id="login" placeholder="login"/>
-          <input style={{margin: '10px'}} ref={pass} type="password" className="form-control" id="password"
-                 placeholder="password" onKeyDown={e => handleChange(e)}/>
+          <input ref={log} type="text" className="form-control" id="login" placeholder="login" style={{background: "rgba(0,0,0,0)"}}/>
+          <input style={{margin: '10px', background: "rgba(0,0,0,0)"}} ref={pass} type="password" className="form-control" id="password"
+                 placeholder="password" onKeyDown={e => handleChange(e)} />
           <button type="button" className="btn btn-primary" style={{width: '100%'}} onClick={Login}>Войти</button>
           <button type="button" className="btn btn-success" style={{width: '100%', margin: '10px'}}
                   onClick={() => router.push('/register')}>Зарегистрироваться

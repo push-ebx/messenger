@@ -141,3 +141,5 @@ body {
   cursor: pointer;
   user-select: none;
 }
+
+#password::placeholder, #login::placeholder { color : white; }
